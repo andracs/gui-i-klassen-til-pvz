@@ -30,7 +30,7 @@ public class Main extends Application {
 
         // Vi prøver at udskrive en masse random cirkler
         String[] farver = {"red", "green", "blue", "yellow"};
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 25; i++) {
             double r =  (int) (Math.random()*20);
             System.out.println(r);
             Circle circle = new Circle();
@@ -58,9 +58,13 @@ public class Main extends Application {
         stage.setX(500);
         stage.show();
 
+        // Den her har jeg tilføjet efter undervisning. Det er en action handler, dvs.
+        // en metode, som reagerer på klik på button "btZ"
         btZ.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Hjælper planten mod zombien.");
+                btP.setWrapText(true);
+                btP.setText( btP.getText() + " Av. ");
             }
         });
     }
