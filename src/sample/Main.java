@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -7,13 +9,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /** Et eksempel på brug af GUI, som vi har udviklet i klassen. Passer til kapitel 14 */
 public class Main extends Application {
+
+    int frameCounter = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -22,6 +30,8 @@ public class Main extends Application {
         Button btP = new Button("Attack Plant");
         btZ.setLayoutX(40.0);
         btZ.setLayoutY(40.0);
+        btP.setWrapText(true);
+
 
         /* Pane bruges som en beholder til vores GUI elementer
            se mere på https://docs.oracle.com/javafx/2/get_started/hello_world.htm
@@ -63,10 +73,51 @@ public class Main extends Application {
         btZ.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Hjælper planten mod zombien.");
-                btP.setWrapText(true);
                 btP.setText( btP.getText() + " Av. ");
             }
         });
+
+        // Det samme som ovenover, men med Lambda
+        btP.setOnAction((e) -> {
+            System.out.println("Hjælper zombien mod planten.");
+            btZ.setWrapText(true);
+            btZ.setMaxWidth(120.0);
+            btZ.setText( btZ.getText() + " Av. ");
+        });
+
+        // Vi laver en TREDJES scene også, FOR zombies
+        Stage stage3 = new Stage();
+        Pane pane3 = new Pane();
+        Scene scene3 = new Scene(pane3, 600, 250);
+        stage3.setScene(scene3);
+        stage3.setX(800);
+        stage3.show();
+
+        final ImageView imv = new ImageView();
+        final Image image2 = new Image("res/male/Walk (1).png");
+        imv.setImage(image2);
+        imv.setFitWidth(160);
+        imv.setFitHeight(200);
+        //imv.setSmooth(true);
+        final HBox pictureRegion = new HBox();
+        pictureRegion.getChildren().add(imv);
+        pane3.getChildren().add(pictureRegion);
+
+        EventHandler<ActionEvent> eventHandler = event -> {
+            int spriteNum = ((++frameCounter)%10)+1;
+            String sprite = "res/male/Walk ("+ spriteNum + ").png";
+            System.out.println(sprite);
+            final Image image3 = new Image(sprite);
+            imv.setImage(image3);
+            pictureRegion.setLayoutX(pictureRegion.getLayoutX()+1);
+        };
+
+        Timeline animation = new Timeline(
+                new KeyFrame(Duration.millis(100), eventHandler)
+        );
+
+        animation.setCycleCount(Timeline.INDEFINITE);
+        animation.play();
     }
 
 
